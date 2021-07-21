@@ -3,6 +3,7 @@ import React from "react";
 import {useAuth} from "../services/auth-service";
 import {LogIn} from "./login";
 import Home from "./home";
+import Dashboard from "./dashboard";
 
 
 export const AuthComponent = () => {
@@ -11,7 +12,7 @@ export const AuthComponent = () => {
     console.log(auth.authState);
     if(auth.authState === 0)component = <LogIn />;
     else if(auth.authState === 1) component = <div>Loading</div>;
-    else component = <Home />
+    else component = <Dashboard />
     return component;
 }
 

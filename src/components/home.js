@@ -16,13 +16,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { MainNavItems } from './utilitiy-components/navigation';
 import {useAuth} from "../services/auth-service";
-import {Switch, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {ExitToApp} from "@material-ui/icons";
-import {BrowserRouter as Router, useRouteMatch} from "react-router-dom";
-import {PrivateRoute} from "./auth-component";
-import ExpenseDetail from "./expense-detail";
-import Dashboard from "./dashboard";
-import FamilyMembers from "./family-members";
 
 function Copyright() {
     return (
@@ -118,11 +113,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Home() {
+export default function MainContainer({children}) {
     let auth = useAuth();
     const classes = useStyles();
     const [open, setOpen] = useState(true);
-    let { path, url } = useRouteMatch();
     let history = useHistory();
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -132,7 +126,6 @@ export default function Home() {
     };
 
     return (
-        <Router>
         <div className={classes.root}>
             <CssBaseline />
             <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -147,7 +140,7 @@ export default function Home() {
                         <MenuIcon />
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        {auth.user.family.name}
+                        {auth.user.displayName}
                     </Typography>
                     <IconButton color="inherit" onClick={()=>{auth.logOut(() => history.push("/"))}}>
                         <ExitToApp /> Log Out
@@ -172,25 +165,12 @@ export default function Home() {
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
-
-                        <Switch>
-                            <PrivateRoute exact path={path}>
-                                <Dashboard />
-                            </PrivateRoute>
-                            <PrivateRoute path={`${path}/expenses`}>
-                                <ExpenseDetail />
-                            </PrivateRoute>
-                            <PrivateRoute path={`${path}/family-members`}>
-                                <FamilyMembers />
-                            </PrivateRoute>
-                        </Switch>
-
+                    {children}
                     <Box pt={4}>
                         <Copyright />
                     </Box>
                 </Container>
             </main>
         </div>
-        </Router>
     );
 }

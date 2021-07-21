@@ -3,6 +3,8 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {AuthComponent, PrivateRoute, RedirectIfLoggedIn} from "./components/auth-component";
 import SignUp from "./components/register";
 import {Profile} from "./components/profile";
+import ExpenseDetail from "./components/expense-detail";
+import FamilyMembers from "./components/family-members";
 
 function App() {
   return (
@@ -18,8 +20,8 @@ function App() {
           <PrivateRoute path={"/profile"}>
             <Profile />
           </PrivateRoute>
-          <PrivateRoute path={"/expense"}>
-
+          <PrivateRoute path={"/expenses"}>
+            <ExpenseDetail />
           </PrivateRoute>
         </Switch>
       </Router>

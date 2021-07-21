@@ -5,6 +5,7 @@ import Summary from "./utilitiy-components/summary";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import clsx from "clsx";
+import MainContainer from "./home";
 
 
 const useStyles = makeStyles(theme => ({
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard(){
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-    return <>
+    return <MainContainer>
         <Grid container spacing={3}>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={8}>
@@ -38,5 +39,5 @@ export default function Dashboard(){
             </Grid>
             {/* Recent Orders */}
         </Grid>
-    </>
+    </MainContainer>
 }

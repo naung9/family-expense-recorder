@@ -1,7 +1,21 @@
+export class FieldError extends Error{
+    constructor(field, msg) {
+        super(msg);
+        this.field = field;
+    }
+    getField(){
+        return this.field;
+    }
+}
+
+export class PasswordError extends Error{
+
+}
+
 const passwordValidators = [
     (password) => {
         if(password.length < 8){
-            throw new Error("Password length must be 8 or more characters");
+            throw new PasswordError("Password length must be 8 or more characters");
         }
         return true;
     },
@@ -11,7 +25,7 @@ const passwordValidators = [
             if(letter === letter.toUpperCase()) isValid = true;
         });
         if(!isValid){
-            throw new Error("Password must contain at least ONE UPPERCASE character");
+            throw new PasswordError("Password must contain at least ONE UPPERCASE character");
         }
         return true;
     },
@@ -21,20 +35,21 @@ const passwordValidators = [
             if(letter >= "0" && letter <= "9") isValid = true;
         });
         if(!isValid){
-            throw new Error("Password must contain at least ONE NUMERIC character");
+            throw new PasswordError("Password must contain at least ONE NUMERIC character");
         }
         return true;
     }
 ];
-const emptyStringValidator = (string, fieldName) => {
-    if (string === null || string === undefined || string === "" || string.length <= 0) throw new Error(`${fieldName} must not be empty`);
+const emptyStringValidator = (string, fieldName, fieldLabel) => {
+    if (string === null || string === undefined || string === "" || string.length <= 0) throw new FieldError(fieldName,`${fieldName} must not be empty`);
     return true;
 };
 export const validateUser = (user) => {
     let isValid = false;
-    isValid = emptyStringValidator(user.name, "User Name");
-    isValid = emptyStringValidator(user.email, "Email");
-    isValid = emptyStringValidator(user.password, "Password");
+    isValid = emptyStringValidator(user.name, "name","User Name");
+    isValid = emptyStringValidator(user.email, "email","Email");
+    isValid = emptyStringValidator(user.password, "password","Password");
+    if(user.password !== user.confirmPassword) throw new PasswordError("Password and confirm password does not match");
     passwordValidators.forEach(validator => {
         if(validator(user.password))isValid = true;
     });

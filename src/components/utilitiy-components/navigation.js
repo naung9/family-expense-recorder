@@ -4,7 +4,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -31,14 +30,6 @@ export const MainNavItems = (
 
         </ListItem>
         </Link>
-        <ListItem button>
-            <ListItemIcon>
-                <PeopleIcon />
-            </ListItemIcon>
-            <Link to={"/family-members"}>
-                <ListItemText primary="Family Members" />
-            </Link>
-        </ListItem>
         <ListItem button>
             <ListItemIcon>
                 <BarChartIcon />

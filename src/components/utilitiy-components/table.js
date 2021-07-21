@@ -18,7 +18,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import clsx from "clsx";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import {Add, Delete} from "@material-ui/icons";
+import {Add, Delete, Details, Edit} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -89,6 +89,9 @@ function EnhancedTableHead(props) {
                         </TableSortLabel>
                     </TableCell>
                 ))}
+                <TableCell padding={'default'}>
+                    Actions
+                </TableCell>
             </TableRow>
         </TableHead>
     );
@@ -322,14 +325,13 @@ function EnhancedTable(props) {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.id)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.id}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox">
+                                            <TableCell padding="checkbox" onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
                                                     checked={isItemSelected}
                                                     inputProps={{'aria-labelledby': labelId}}
@@ -337,8 +339,19 @@ function EnhancedTable(props) {
                                             </TableCell>
                                             {
                                                 props.headCells.map(cell => <TableCell key={`${row.id}-${cell.id}`} align={cell.numeric ? 'right' : 'left'}
-                                                                                       padding={cell.disablePadding ? 'none' : 'default'}>{extractValue(cell.id, row)+""}</TableCell>)
+                                                                                       padding={cell.disablePadding ? 'none' : 'default'}>{cell.isImage ? <img src={extractValue(cell.id, row)+""} height={100} width={100} />: extractValue(cell.id, row)+""}</TableCell>)
                                             }
+                                            <TableCell align={'left'} padding="default">
+                                                <IconButton>
+                                                    <Details />
+                                                </IconButton>
+                                                <IconButton>
+                                                    <Edit />
+                                                </IconButton>
+                                                <IconButton>
+                                                    <Delete />
+                                                </IconButton>
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}

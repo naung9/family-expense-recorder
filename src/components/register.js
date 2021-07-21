@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -6,8 +6,11 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {FormGroup, InputLabel} from "@material-ui/core";
+import {useAuth} from "../services/auth-service";
+import {FieldError, PasswordError, validateUser} from "../services/validation-services";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -31,9 +34,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
     const classes = useStyles();
+    const auth = useAuth();
+    let initialVal = {value: "", error: ""};
+    let [name, setName] = useState(initialVal);
+    let [email, setEmail] = useState(initialVal);
+    let [password, setPassword] = useState(initialVal);
+    let [confirmPass, setConfirmPass] = useState("");
+    let [profilePic, setProfilePic] = useState(null);
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Sign up
@@ -48,6 +58,12 @@ export default function SignUp() {
                                 id="name"
                                 label="Name"
                                 name="name"
+                                focused={!!name.error}
+                                error={!!name.error}
+                                helperText={name.error}
+                                onChange={(e)=>{
+                                    setName({value: e.target.value, error: ""});
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -59,7 +75,30 @@ export default function SignUp() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                type="email"
+                                focused={!!email.error}
+                                error={!!email.error}
+                                helperText={email.error}
+                                onChange={(e)=>{
+                                    setEmail({value: e.target.value, error: ""});
+                                }}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormGroup>
+                                <InputLabel>Profile Picture</InputLabel>
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="profilePic"
+                                    name="profilePic"
+                                    type={"file"}
+                                    onChange={(e)=>{
+                                        setProfilePic(e.target.files[0]);
+                                    }}
+                                />
+                            </FormGroup>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -71,6 +110,12 @@ export default function SignUp() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                focused={!!password.error}
+                                error={!!password.error}
+                                helperText={password.error}
+                                onChange={(e)=>{
+                                    setPassword({value: e.target.value, error: ""});
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -83,6 +128,9 @@ export default function SignUp() {
                                 type="password"
                                 id="confirm-password"
                                 autoComplete="current-password"
+                                onChange={(e)=>{
+                                    setConfirmPass(e.target.value);
+                                }}
                             />
                         </Grid>
 
@@ -93,6 +141,30 @@ export default function SignUp() {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            let user = {name: name.value, email: email.value, password: password.value, confirmPassword: confirmPass, profilePic}
+                            try{
+                                if (validateUser(user)) {
+                                    auth.signUp(user, user.password, null, null, null);
+                                }
+                            }catch (e){
+                                if(e instanceof FieldError){
+                                    if(e.getField() === "name"){
+                                        setName({...name, error: e.message})
+                                    }
+                                    else if(e.getField() === "email"){
+                                        setEmail({...email, error: e.message})
+                                    }
+                                }
+                                else if(e instanceof PasswordError){
+                                    setPassword({...password, error: e.message})
+                                }
+                                else{
+                                    console.log(e);
+                                }
+                            }
+                        }}
                     >
                         Sign Up
                     </Button>
